@@ -28,6 +28,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import com.example.yra.ui.components.YraHeader
 import com.example.yra.ui.components.YraNavbar
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.MaterialTheme
+import com.example.yra.ui.theme.DarkBackgroundStart
+import com.example.yra.ui.theme.DarkBackgroundEnd
+import com.example.yra.ui.theme.LightBackgroundStart
+import com.example.yra.ui.theme.LightBackgroundEnd
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.yra.YraApplication
 import com.example.yra.data.local.YraDatabase
@@ -45,6 +53,15 @@ import com.example.yra.ui.songs.SongsViewModelFactory
 import com.example.yra.ui.configuration.ConfigurationScreen
 import com.example.yra.ui.configuration.ConfigurationViewModel
 import com.example.yra.ui.configuration.ConfigurationViewModelFactory
+import com.example.yra.ui.lobby.LobbyScreen
+import com.example.yra.ui.lobby.LobbyViewModel
+import com.example.yra.ui.lobby.LobbyViewModelFactory
+import com.example.yra.ui.stats.StatsScreen
+import com.example.yra.ui.stats.StatsViewModel
+import com.example.yra.ui.stats.StatsViewModelFactory
+import com.example.yra.ui.options.OptionsScreen
+import com.example.yra.ui.options.OptionsViewModel
+import com.example.yra.ui.options.OptionsViewModelFactory
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -74,6 +91,9 @@ fun YraNavGraph(
     val songsViewModelFactory = remember { SongsViewModelFactory(songRepository, userPreferencesRepository) }
     val playlistsViewModelFactory = remember { PlaylistsViewModelFactory(playlistRepository) }
     val configurationViewModelFactory = remember { ConfigurationViewModelFactory(userPreferencesRepository, songRepository) }
+    val lobbyViewModelFactory = remember { LobbyViewModelFactory(database.statsDao()) }
+    val statsViewModelFactory = remember { StatsViewModelFactory(database.statsDao()) }
+    val optionsViewModelFactory = remember { OptionsViewModelFactory(application.equalizerManager, application.sleepTimerManager) }
     
     // Playback state
     val isPlaying by playbackController.isPlaying.collectAsState()
@@ -84,11 +104,30 @@ fun YraNavGraph(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    
+    val isDarkTheme = MaterialTheme.colorScheme.background == DarkBackgroundStart
+    val backgroundBrush = if (isDarkTheme) {
+        Brush.verticalGradient(listOf(DarkBackgroundStart, DarkBackgroundEnd))
+    } else {
+        Brush.verticalGradient(listOf(LightBackgroundStart, LightBackgroundEnd))
+    }
+    
+    val navigateToTopLevelDestination = { route: String ->
+        navController.navigate(route) {
+            popUpTo(navController.graph.startDestinationId) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
+            ModalDrawerSheet(
+                modifier = Modifier.fillMaxWidth(0.75f)
+            ) {
                 Text("Main Menu", modifier = Modifier.padding(16.dp))
                 NavigationDrawerItem(
                     icon = { Icon(Icons.Default.Settings, contentDescription = "Configuration") },
@@ -96,7 +135,7 @@ fun YraNavGraph(
                     selected = currentRoute == YraDestinations.CONFIGURATION_ROUTE,
                     onClick = {
                         scope.launch { drawerState.close() }
-                        navController.navigate(YraDestinations.CONFIGURATION_ROUTE)
+                        navigateToTopLevelDestination(YraDestinations.CONFIGURATION_ROUTE)
                     }
                 )
                 // TODO: Agregar Stats, Web site, About us
@@ -104,6 +143,8 @@ fun YraNavGraph(
         }
     ) {
         Scaffold(
+            modifier = Modifier.background(backgroundBrush),
+            containerColor = androidx.compose.ui.graphics.Color.Transparent,
             topBar = {
                 if (showTopBottomBars) {
                     YraHeader(
@@ -126,15 +167,7 @@ fun YraNavGraph(
                     }
                     YraNavbar(
                         currentRoute = currentRoute,
-                        onNavigateToRoute = { route ->
-                            navController.navigate(route) {
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
-                        }
+                        onNavigateToRoute = navigateToTopLevelDestination
                     )
                 }
             }
@@ -146,7 +179,8 @@ fun YraNavGraph(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(YraDestinations.LOBBY_ROUTE) {
-                PlaceholderScreen("Lobby Screen")
+                val lobbyViewModel: LobbyViewModel = viewModel(factory = lobbyViewModelFactory)
+                LobbyScreen(viewModel = lobbyViewModel)
             }
             composable(YraDestinations.SONGS_ROUTE) {
                 val playlistsViewModel: PlaylistsViewModel = viewModel(factory = playlistsViewModelFactory)
@@ -177,10 +211,15 @@ fun YraNavGraph(
                 )
             }
             composable(YraDestinations.STATS_ROUTE) {
-                PlaceholderScreen("Stats Screen")
+                val statsViewModel: StatsViewModel = viewModel(factory = statsViewModelFactory)
+                StatsScreen(
+                    viewModel = statsViewModel,
+                    onSongClick = { song -> playbackController.playSong(song) }
+                )
             }
             composable(YraDestinations.OPTIONS_ROUTE) {
-                PlaceholderScreen("Options Screen")
+                val optionsViewModel: OptionsViewModel = viewModel(factory = optionsViewModelFactory)
+                OptionsScreen(viewModel = optionsViewModel)
             }
             composable(YraDestinations.CONFIGURATION_ROUTE) {
                 val configurationViewModel: ConfigurationViewModel = viewModel(factory = configurationViewModelFactory)
@@ -194,9 +233,7 @@ fun YraNavGraph(
             }
             composable(YraDestinations.SONG_PLAY_ROUTE) {
                 SongPlayScreen(
-                    song = currentSong,
-                    isPlaying = isPlaying,
-                    onPlayPauseClick = { playbackController.togglePlayPause() },
+                    playbackController = playbackController,
                     onToggleFavorite = { currentSong?.let { songsViewModel.toggleFavorite(it) } },
                     onBackClick = { navController.popBackStack() }
                 )

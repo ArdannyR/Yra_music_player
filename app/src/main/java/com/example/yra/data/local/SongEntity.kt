@@ -23,5 +23,9 @@ data class SongEntity(
     val secondarySourceUrl: String? = null,
     
     val isFavorite: Boolean = false,
-    val dateAdded: Long
+    val dateAdded: Long,
+    
+    // Statistics
+    val playCount: Int = 0,
+    val totalTimeListened: Long = 0L
 )

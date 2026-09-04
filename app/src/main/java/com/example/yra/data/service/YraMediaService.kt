@@ -7,6 +7,7 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
+import com.example.yra.YraApplication
 
 class YraMediaService : MediaSessionService() {
 
@@ -28,6 +29,9 @@ class YraMediaService : MediaSessionService() {
             .build()
             
         mediaSession = MediaSession.Builder(this, player).build()
+        
+        val app = applicationContext as YraApplication
+        app.playbackController.setAudioSessionId(player.audioSessionId)
     }
 
     // Retorna la sesión a los clientes (MediaController)

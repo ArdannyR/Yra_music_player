@@ -22,6 +22,9 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Repeat
+import androidx.compose.material.icons.filled.RepeatOne
+import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material3.Icon
@@ -30,6 +33,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,17 +42,21 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.Player
+import com.example.yra.domain.playback.PlaybackController
 import com.example.yra.data.local.SongEntity
 
 @Composable
 fun SongPlayScreen(
-    song: SongEntity?,
-    isPlaying: Boolean,
-    onPlayPauseClick: () -> Unit,
+    playbackController: PlaybackController,
     onToggleFavorite: () -> Unit,
     onBackClick: () -> Unit
 ) {
-    if (song == null) {
+    val song by playbackController.currentSong.collectAsState()
+    val isPlaying by playbackController.isPlaying.collectAsState()
+    val isShuffleEnabled by playbackController.isShuffleEnabled.collectAsState()
+    val repeatMode by playbackController.repeatMode.collectAsState()
+    val currentSong = song ?: run {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("No song selected")
         }
@@ -67,7 +76,7 @@ fun SongPlayScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onBackClick) {
+            com.example.yra.ui.components.NeuIconButton(onClick = onBackClick) {
                 Icon(
                     imageVector = Icons.Default.KeyboardArrowDown,
                     contentDescription = "Back",
@@ -75,12 +84,12 @@ fun SongPlayScreen(
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
-            IconButton(onClick = onToggleFavorite) {
+            com.example.yra.ui.components.NeuIconButton(onClick = onToggleFavorite) {
                 Icon(
-                    imageVector = if (song.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    imageVector = if (currentSong.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite",
                     modifier = Modifier.size(32.dp),
-                    tint = if (song.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+                    tint = if (currentSong.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
                 )
             }
         }
@@ -88,32 +97,30 @@ fun SongPlayScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Big Cover (Neumorphism Style)
-        Box(
+        com.example.yra.ui.components.NeuCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .aspectRatio(1f)
-                .shadow(
-                    elevation = 16.dp,
-                    shape = RoundedCornerShape(32.dp),
-                    spotColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.2f)
-                )
-                .clip(RoundedCornerShape(32.dp))
-                .background(MaterialTheme.colorScheme.surface),
-            contentAlignment = Alignment.Center
+                .aspectRatio(1f),
+            shape = RoundedCornerShape(32.dp)
         ) {
-            Icon(
-                imageVector = Icons.Default.MusicNote,
-                contentDescription = "Cover",
-                modifier = Modifier.size(120.dp),
-                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
-            )
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MusicNote,
+                    contentDescription = "Cover",
+                    modifier = Modifier.size(120.dp),
+                    tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(48.dp))
 
         // Title and Artist
         Text(
-            text = song.title,
+            text = currentSong.title,
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onBackground,
             maxLines = 1,
@@ -122,7 +129,7 @@ fun SongPlayScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = song.artist,
+            text = currentSong.artist,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
@@ -139,6 +146,40 @@ fun SongPlayScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Shuffle & Repeat Row
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            com.example.yra.ui.components.NeuIconButton(
+                onClick = { playbackController.toggleShuffle() },
+                modifier = Modifier.size(48.dp),
+                iconTint = if (isShuffleEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+            ) {
+                Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Shuffle,
+                    contentDescription = "Shuffle",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            
+            com.example.yra.ui.components.NeuIconButton(
+                onClick = { playbackController.toggleRepeat() },
+                modifier = Modifier.size(48.dp),
+                iconTint = if (repeatMode != Player.REPEAT_MODE_OFF) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+            ) {
+                val icon = if (repeatMode == Player.REPEAT_MODE_ONE) androidx.compose.material.icons.Icons.Default.RepeatOne else androidx.compose.material.icons.Icons.Default.Repeat
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Repeat",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        }
+        
         Spacer(modifier = Modifier.height(16.dp))
 
         // Controls
@@ -147,42 +188,34 @@ fun SongPlayScreen(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { /* TODO Skip Prev */ }) {
+            com.example.yra.ui.components.NeuIconButton(onClick = { playbackController.skipToPrevious() }, modifier = Modifier.size(64.dp)) {
                 Icon(
                     imageVector = Icons.Default.SkipPrevious,
                     contentDescription = "Previous",
-                    modifier = Modifier.size(48.dp),
+                    modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
             
             // Play/Pause Big Button
-            Box(
-                modifier = Modifier
-                    .size(80.dp)
-                    .shadow(
-                        elevation = 8.dp,
-                        shape = CircleShape,
-                        spotColor = MaterialTheme.colorScheme.primary
-                    )
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primary)
-                    .clickable(onClick = onPlayPauseClick),
-                contentAlignment = Alignment.Center
+            com.example.yra.ui.components.NeuIconButton(
+                onClick = { playbackController.togglePlayPause() },
+                modifier = Modifier.size(80.dp),
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                iconTint = MaterialTheme.colorScheme.onPrimary
             ) {
                 Icon(
                     imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                     contentDescription = if (isPlaying) "Pause" else "Play",
-                    modifier = Modifier.size(48.dp),
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    modifier = Modifier.size(48.dp)
                 )
             }
 
-            IconButton(onClick = { /* TODO Skip Next */ }) {
+            com.example.yra.ui.components.NeuIconButton(onClick = { playbackController.skipToNext() }, modifier = Modifier.size(64.dp)) {
                 Icon(
                     imageVector = Icons.Default.SkipNext,
                     contentDescription = "Next",
-                    modifier = Modifier.size(48.dp),
+                    modifier = Modifier.size(32.dp),
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }

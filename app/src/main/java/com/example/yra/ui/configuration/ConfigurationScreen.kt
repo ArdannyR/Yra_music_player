@@ -118,11 +118,11 @@ fun ConfigurationScreen(
 
         item {
             Spacer(modifier = Modifier.height(16.dp))
-            Button(
+            com.example.yra.ui.components.NeuButton(
                 onClick = { dirPickerLauncher.launch(null) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Add Directory")
+                Text("Add Directory", color = MaterialTheme.colorScheme.primary)
             }
         }
     }
@@ -171,18 +171,17 @@ private fun ThemeOption(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    val backgroundColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
-    val textColor = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+    val backgroundColor = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    val textColor = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.primary
 
-    Surface(
+    com.example.yra.ui.components.NeuButton(
         onClick = onClick,
-        color = backgroundColor,
-        shape = MaterialTheme.shapes.small,
-        modifier = Modifier.padding(end = 8.dp)
+        backgroundColor = backgroundColor,
+        modifier = Modifier.padding(end = 8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Text(
             text = text,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
             color = textColor,
             style = MaterialTheme.typography.labelLarge
         )
@@ -227,13 +226,10 @@ private fun DirectoryItem(
         uriString
     }
     
-    Surface(
+    com.example.yra.ui.components.NeuCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        shape = MaterialTheme.shapes.medium,
-        color = MaterialTheme.colorScheme.surface,
-        tonalElevation = 2.dp
+            .padding(vertical = 8.dp)
     ) {
         Row(
             modifier = Modifier
@@ -248,7 +244,7 @@ private fun DirectoryItem(
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
             )
-            IconButton(onClick = onRemove) {
+            com.example.yra.ui.components.NeuIconButton(onClick = onRemove) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Remove Directory",

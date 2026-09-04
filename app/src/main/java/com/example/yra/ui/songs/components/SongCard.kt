@@ -16,24 +16,19 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.yra.data.local.SongEntity
+import com.example.yra.ui.components.NeuCard
+import com.example.yra.ui.components.NeuIconButton
+import com.example.yra.ui.theme.neumorphic
 
 @Composable
 fun SongCard(
@@ -45,29 +40,33 @@ fun SongCard(
     onDeleteClick: () -> Unit,
     onOptionsClick: () -> Unit
 ) {
-    Row(
+    NeuCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp)
-            .shadow(
-                elevation = 4.dp,
-                shape = RoundedCornerShape(16.dp),
-                spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-            )
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .clickable(onClick = onClick)
-            .padding(12.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(16.dp),
+        elevation = 4.dp
     ) {
-        // Thumbnail placeholder
-        Box(
+        Row(
             modifier = Modifier
-                .size(48.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            // Thumbnail placeholder con efecto hundido
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .neumorphic(
+                        shape = RoundedCornerShape(8.dp),
+                        elevation = 2.dp,
+                        isPressed = true // Efecto hundido
+                    )
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surface),
+                contentAlignment = Alignment.Center
+            ) {
             Icon(
                 imageVector = Icons.Default.MusicNote,
                 contentDescription = null,
@@ -94,20 +93,29 @@ fun SongCard(
             )
         }
 
-        IconButton(onClick = onToggleFavorite) {
-            Icon(
+        NeuIconButton(
+            onClick = onToggleFavorite,
+            elevation = 2.dp
+        ) {
+            androidx.compose.material3.Icon(
                 imageVector = if (song.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = "Favorite",
                 tint = if (song.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
-        IconButton(onClick = onOptionsClick) {
-            Icon(
+        Spacer(modifier = Modifier.width(8.dp))
+
+        NeuIconButton(
+            onClick = onOptionsClick,
+            elevation = 2.dp
+        ) {
+            androidx.compose.material3.Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "Options",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+    }
     }
 }

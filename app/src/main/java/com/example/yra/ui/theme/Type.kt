@@ -6,25 +6,18 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// TODO: Para que la app sea 100% offline, debes colocar los archivos 'space_grotesk.ttf' e 'inter.ttf' 
-// en 'app/src/main/res/font/' y descomentar estas definiciones. Por ahora usamos SansSerif.
-/*
 import androidx.compose.ui.text.font.Font
 import com.example.yra.R
 
 val SpaceGrotesk = FontFamily(
-    Font(R.font.space_grotesk, FontWeight.Normal),
-    Font(R.font.space_grotesk, FontWeight.Medium)
+    Font(R.font.space_grotesk_regular, FontWeight.Normal),
+    Font(R.font.space_grotesk_medium, FontWeight.Medium)
 )
 
 val Inter = FontFamily(
-    Font(R.font.inter, FontWeight.Normal),
-    Font(R.font.inter, FontWeight.Medium)
+    Font(R.font.inter_regular, FontWeight.Normal),
+    Font(R.font.inter_medium, FontWeight.Medium)
 )
-*/
-
-val SpaceGrotesk = FontFamily.SansSerif
-val Inter = FontFamily.SansSerif
 
 val Typography = Typography(
     // Títulos y logo usan Space Grotesk

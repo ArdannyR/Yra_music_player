@@ -17,18 +17,19 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.yra.data.local.SongEntity
+import com.example.yra.ui.components.NeuCard
+import com.example.yra.ui.components.NeuIconButton
+import com.example.yra.ui.theme.neumorphic
 
 @Composable
 fun MiniSongPlay(
@@ -38,29 +39,34 @@ fun MiniSongPlay(
     onToggleFavorite: () -> Unit,
     onClick: () -> Unit
 ) {
-    Row(
+    NeuCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 4.dp)
-            .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(12.dp),
-                spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f)
-            )
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .clickable(onClick = onClick)
-            .padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        elevation = 8.dp,
+        backgroundColor = MaterialTheme.colorScheme.surfaceVariant
     ) {
-        // Thumbnail placeholder
-        Box(
+        Row(
             modifier = Modifier
-                .size(40.dp)
-                .clip(RoundedCornerShape(6.dp))
-                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)),
-            contentAlignment = Alignment.Center
+                .fillMaxWidth()
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            // Thumbnail placeholder con efecto hundido
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .neumorphic(
+                        shape = RoundedCornerShape(6.dp),
+                        elevation = 2.dp,
+                        isPressed = true
+                    )
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
             Icon(
                 imageVector = Icons.Default.MusicNote,
                 contentDescription = null,
@@ -87,20 +93,29 @@ fun MiniSongPlay(
             )
         }
 
-        IconButton(onClick = onToggleFavorite) {
-            Icon(
+        NeuIconButton(
+            onClick = onToggleFavorite,
+            elevation = 2.dp
+        ) {
+            androidx.compose.material3.Icon(
                 imageVector = if (song.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = "Favorite",
                 tint = if (song.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
-        IconButton(onClick = onPlayPauseClick) {
-            Icon(
+        Spacer(modifier = Modifier.width(4.dp))
+
+        NeuIconButton(
+            onClick = onPlayPauseClick,
+            elevation = 2.dp
+        ) {
+            androidx.compose.material3.Icon(
                 imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
                 contentDescription = if (isPlaying) "Pause" else "Play",
                 tint = MaterialTheme.colorScheme.primary
             )
         }
+    }
     }
 }
