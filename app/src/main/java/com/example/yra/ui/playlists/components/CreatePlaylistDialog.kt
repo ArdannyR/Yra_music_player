@@ -18,8 +18,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.yra.R
 
 @Composable
 fun CreatePlaylistDialog(
@@ -38,7 +40,7 @@ fun CreatePlaylistDialog(
                 modifier = Modifier.padding(24.dp)
             ) {
                 Text(
-                    text = "Nueva Playlist",
+                    text = stringResource(R.string.playlist_create_title),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -47,7 +49,7 @@ fun CreatePlaylistDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nombre") },
+                    label = { Text(stringResource(R.string.playlist_create_field_name)) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
@@ -58,13 +60,13 @@ fun CreatePlaylistDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Cancelar")
+                        Text(stringResource(R.string.action_cancel))
                     }
                     TextButton(
                         onClick = { onCreate(name) },
                         enabled = name.isNotBlank()
                     ) {
-                        Text("Crear")
+                        Text(stringResource(R.string.action_create))
                     }
                 }
             }

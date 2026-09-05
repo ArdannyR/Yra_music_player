@@ -15,7 +15,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.yra.R
 import com.example.yra.domain.playback.PlaybackController
 import com.example.yra.ui.songs.components.SongCard
 
@@ -54,7 +56,7 @@ fun PlaylistDetailScreen(
                     
                     if (state.songs.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("Esta lista está vacía.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(stringResource(R.string.playlist_empty_state), color = MaterialTheme.colorScheme.onSurfaceVariant)
                         }
                     } else {
                         LazyColumn(modifier = Modifier.fillMaxSize()) {

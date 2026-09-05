@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.RepeatOne
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -84,13 +85,25 @@ fun SongPlayScreen(
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
-            com.example.yra.ui.components.NeuIconButton(onClick = onToggleFavorite) {
-                Icon(
-                    imageVector = if (currentSong.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorite",
-                    modifier = Modifier.size(32.dp),
-                    tint = if (currentSong.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
-                )
+            
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                com.example.yra.ui.components.NeuIconButton(onClick = onToggleFavorite) {
+                    Icon(
+                        imageVector = if (currentSong.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        modifier = Modifier.size(32.dp),
+                        tint = if (currentSong.isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+                    )
+                }
+                
+                com.example.yra.ui.components.NeuIconButton(onClick = { /* TODO: Open SongOptionsBottomSheet */ }) {
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "Options",
+                        modifier = Modifier.size(32.dp),
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
         }
 
@@ -145,55 +158,35 @@ fun SongPlayScreen(
             onValueChange = {},
             modifier = Modifier.fillMaxWidth()
         )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Shuffle & Repeat Row
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            com.example.yra.ui.components.NeuIconButton(
-                onClick = { playbackController.toggleShuffle() },
-                modifier = Modifier.size(48.dp),
-                iconTint = if (isShuffleEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
-            ) {
-                Icon(
-                    imageVector = androidx.compose.material.icons.Icons.Default.Shuffle,
-                    contentDescription = "Shuffle",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            
-            com.example.yra.ui.components.NeuIconButton(
-                onClick = { playbackController.toggleRepeat() },
-                modifier = Modifier.size(48.dp),
-                iconTint = if (repeatMode != Player.REPEAT_MODE_OFF) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
-            ) {
-                val icon = if (repeatMode == Player.REPEAT_MODE_ONE) androidx.compose.material.icons.Icons.Default.RepeatOne else androidx.compose.material.icons.Icons.Default.Repeat
-                Icon(
-                    imageVector = icon,
-                    contentDescription = "Repeat",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            Text("0:00", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text("0:00", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        
-        Spacer(modifier = Modifier.height(16.dp))
+
+        Spacer(modifier = Modifier.height(32.dp))
 
         // Controls
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            com.example.yra.ui.components.NeuIconButton(onClick = { playbackController.skipToPrevious() }, modifier = Modifier.size(64.dp)) {
+            com.example.yra.ui.components.NeuIconButton(
+                onClick = { playbackController.skipToPrevious() },
+                modifier = Modifier.size(64.dp),
+                iconTint = MaterialTheme.colorScheme.onBackground
+            ) {
                 Icon(
                     imageVector = Icons.Default.SkipPrevious,
                     contentDescription = "Previous",
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.onBackground
+                    modifier = Modifier.size(32.dp)
                 )
             }
             
@@ -211,12 +204,51 @@ fun SongPlayScreen(
                 )
             }
 
-            com.example.yra.ui.components.NeuIconButton(onClick = { playbackController.skipToNext() }, modifier = Modifier.size(64.dp)) {
+            com.example.yra.ui.components.NeuIconButton(
+                onClick = { playbackController.skipToNext() },
+                modifier = Modifier.size(64.dp),
+                iconTint = MaterialTheme.colorScheme.onBackground
+            ) {
                 Icon(
                     imageVector = Icons.Default.SkipNext,
                     contentDescription = "Next",
-                    modifier = Modifier.size(32.dp),
-                    tint = MaterialTheme.colorScheme.onBackground
+                    modifier = Modifier.size(32.dp)
+                )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        // Shuffle & Repeat Row (Moved below transport controls)
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 32.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            com.example.yra.ui.components.NeuIconButton(
+                onClick = { playbackController.toggleShuffle() },
+                modifier = Modifier.size(48.dp),
+                iconTint = if (isShuffleEnabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Shuffle,
+                    contentDescription = "Shuffle",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            
+            com.example.yra.ui.components.NeuIconButton(
+                onClick = { playbackController.toggleRepeat() },
+                modifier = Modifier.size(48.dp),
+                iconTint = if (repeatMode != Player.REPEAT_MODE_OFF) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+            ) {
+                val icon = if (repeatMode == Player.REPEAT_MODE_ONE) Icons.Default.RepeatOne else Icons.Default.Repeat
+                Icon(
+                    imageVector = icon,
+                    contentDescription = "Repeat",
+                    modifier = Modifier.size(24.dp)
                 )
             }
         }

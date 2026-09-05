@@ -77,36 +77,56 @@ fun ConfigurationScreen(
         }
 
         item {
-            SectionTitle("Appearance")
-            Spacer(modifier = Modifier.height(8.dp))
-            ThemeSelector(
-                currentTheme = preferences.themeMode,
-                onThemeSelected = { viewModel.updateThemeMode(it) }
-            )
+            com.example.yra.ui.components.NeuCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                    SectionTitle("Appearance")
+                    
+                    com.example.yra.ui.components.SettingsRow(
+                        label = "Theme"
+                    ) {
+                        ThemeSelector(
+                            currentTheme = preferences.themeMode,
+                            onThemeSelected = { viewModel.updateThemeMode(it) }
+                        )
+                    }
+                    
+                    com.example.yra.ui.components.SettingsRow(
+                        label = "Font Size"
+                    ) {
+                        FontScaleSelector(
+                            currentScale = preferences.fontScale,
+                            onScaleSelected = { viewModel.updateFontScale(it) }
+                        )
+                    }
+                }
+            }
             Spacer(modifier = Modifier.height(16.dp))
-            
-            Text("Font Size", style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(8.dp))
-            FontScaleSelector(
-                currentScale = preferences.fontScale,
-                onScaleSelected = { viewModel.updateFontScale(it) }
-            )
-            Spacer(modifier = Modifier.height(32.dp))
         }
 
         item {
-            SectionTitle("Music Library")
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = "Scanned Directories",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Text(
-                text = "If the list is empty, the entire device will be scanned.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+            com.example.yra.ui.components.NeuCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    SectionTitle("Music Library")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Scanned Directories",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Text(
+                        text = "If the list is empty, the entire device will be scanned.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         }
 
         items(preferences.scanDirectories.toList()) { uriString ->
@@ -132,9 +152,10 @@ fun ConfigurationScreen(
 private fun SectionTitle(title: String) {
     Text(
         text = title,
-        style = MaterialTheme.typography.titleLarge,
+        style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colorScheme.primary
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
     )
 }
 
@@ -144,11 +165,10 @@ private fun ThemeSelector(
     onThemeSelected: (ThemeMode) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         ThemeOption(
-            text = "System",
+            text = "Sys",
             selected = currentTheme == ThemeMode.SYSTEM,
             onClick = { onThemeSelected(ThemeMode.SYSTEM) }
         )
@@ -177,13 +197,12 @@ private fun ThemeOption(
     com.example.yra.ui.components.NeuButton(
         onClick = onClick,
         backgroundColor = backgroundColor,
-        modifier = Modifier.padding(end = 8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
     ) {
         Text(
             text = text,
             color = textColor,
-            style = MaterialTheme.typography.labelLarge
+            style = MaterialTheme.typography.labelMedium
         )
     }
 }
@@ -194,21 +213,20 @@ private fun FontScaleSelector(
     onScaleSelected: (Float) -> Unit
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         ThemeOption(
-            text = "Small",
+            text = "S",
             selected = currentScale == 0.85f,
             onClick = { onScaleSelected(0.85f) }
         )
         ThemeOption(
-            text = "Medium",
+            text = "M",
             selected = currentScale == 1.0f,
             onClick = { onScaleSelected(1.0f) }
         )
         ThemeOption(
-            text = "Large",
+            text = "L",
             selected = currentScale == 1.15f,
             onClick = { onScaleSelected(1.15f) }
         )

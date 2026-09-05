@@ -17,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.yra.R
 import com.example.yra.ui.theme.YraTheme
 import com.example.yra.ui.theme.neumorphic
 
@@ -69,7 +71,7 @@ fun NeuButtonLightPreview() {
         ) {
             NeuButton(onClick = {}) {
                 Text(
-                    text = "Aceptar",
+                    text = stringResource(R.string.action_accept),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -90,7 +92,7 @@ fun NeuButtonDarkPreview() {
         ) {
             NeuButton(onClick = {}) {
                 Text(
-                    text = "Aceptar",
+                    text = stringResource(R.string.action_accept),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary
                 )

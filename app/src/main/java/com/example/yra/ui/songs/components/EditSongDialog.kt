@@ -20,8 +20,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.yra.R
 import com.example.yra.data.local.SongEntity
 
 @Composable
@@ -51,7 +53,7 @@ fun EditSongDialog(
                     .verticalScroll(rememberScrollState())
             ) {
                 Text(
-                    text = "Editar Metadatos",
+                    text = stringResource(R.string.edit_song_title),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -60,7 +62,7 @@ fun EditSongDialog(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Título") },
+                    label = { Text(stringResource(R.string.edit_song_field_title)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -68,7 +70,7 @@ fun EditSongDialog(
                 OutlinedTextField(
                     value = artist,
                     onValueChange = { artist = it },
-                    label = { Text("Artista") },
+                    label = { Text(stringResource(R.string.edit_song_field_artist)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -76,7 +78,7 @@ fun EditSongDialog(
                 OutlinedTextField(
                     value = album,
                     onValueChange = { album = it },
-                    label = { Text("Álbum") },
+                    label = { Text(stringResource(R.string.edit_song_field_album)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -84,7 +86,7 @@ fun EditSongDialog(
                 OutlinedTextField(
                     value = genre,
                     onValueChange = { genre = it },
-                    label = { Text("Género") },
+                    label = { Text(stringResource(R.string.edit_song_field_genre)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -92,7 +94,7 @@ fun EditSongDialog(
                 OutlinedTextField(
                     value = releaseDate,
                     onValueChange = { releaseDate = it },
-                    label = { Text("Fecha (Año)") },
+                    label = { Text(stringResource(R.string.edit_song_field_year)) },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -127,7 +129,7 @@ fun EditSongDialog(
                     horizontalArrangement = Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Cancelar")
+                        Text(stringResource(R.string.action_cancel))
                     }
                     TextButton(onClick = {
                         val updatedSong = song.copy(
@@ -142,7 +144,7 @@ fun EditSongDialog(
                         )
                         onSave(updatedSong)
                     }) {
-                        Text("Guardar")
+                        Text(stringResource(R.string.action_save))
                     }
                 }
             }

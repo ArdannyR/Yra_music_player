@@ -12,10 +12,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.yra.R
 import com.example.yra.data.local.SongEntity
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 @Composable
@@ -35,32 +38,36 @@ fun SongDetailedDataDialog(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Detalles Técnicos",
+                    text = stringResource(R.string.song_details_title),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                DetailItem(label = "Nombre de archivo", value = song.path.substringAfterLast('/'))
+                DetailItem(label = stringResource(R.string.song_details_filename), value = song.path.substringAfterLast('/'))
                 Spacer(modifier = Modifier.height(8.dp))
 
-                DetailItem(label = "Ruta absoluta", value = song.path)
+                DetailItem(label = stringResource(R.string.song_details_path), value = song.path)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                DetailItem(label = "URI", value = song.uri)
+                DetailItem(label = stringResource(R.string.song_details_uri), value = song.uri)
                 Spacer(modifier = Modifier.height(8.dp))
 
-                DetailItem(label = "Duración", value = formatDuration(song.duration))
+                val sizeInMb = File(song.path).length() / 1024 / 1024
+                DetailItem(label = stringResource(R.string.song_details_size), value = "$sizeInMb MB")
+                Spacer(modifier = Modifier.height(8.dp))
+
+                DetailItem(label = stringResource(R.string.song_details_duration), value = formatDuration(song.duration))
                 Spacer(modifier = Modifier.height(8.dp))
                 
-                DetailItem(label = "ID Interno (MediaStore)", value = song.id.toString())
+                DetailItem(label = stringResource(R.string.song_details_id), value = song.id.toString())
                 Spacer(modifier = Modifier.height(24.dp))
 
                 TextButton(
                     onClick = onDismiss,
                     modifier = Modifier.align(Alignment.End)
                 ) {
-                    Text("Cerrar")
+                    Text(stringResource(R.string.action_close))
                 }
             }
         }

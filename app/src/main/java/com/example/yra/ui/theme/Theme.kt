@@ -5,11 +5,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
     primary = PurpleAccent,
-    onPrimary = DarkTextPrimary,
+    onPrimary = LightTextPrimary, // Better contrast against PurpleAccent
     secondary = PurpleLight,
     tertiary = PurpleDark,
     background = DarkBackgroundStart, // Will use custom modifier for gradient later
@@ -32,6 +34,10 @@ private val LightColorScheme = lightColorScheme(
     surfaceVariant = LightSurface,
     onSurfaceVariant = LightTextSecondary
 )
+
+
+
+val LocalYraDarkTheme = compositionLocalOf { false }
 
 @Composable
 fun YraTheme(
@@ -64,9 +70,11 @@ fun YraTheme(
         labelSmall = Typography.labelSmall.copy(fontSize = Typography.labelSmall.fontSize * fontScale)
     )
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = scaledTypography,
-        content = content
-    )
+    CompositionLocalProvider(LocalYraDarkTheme provides darkTheme) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = scaledTypography,
+            content = content
+        )
+    }
 }

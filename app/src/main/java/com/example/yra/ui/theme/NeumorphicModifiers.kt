@@ -82,7 +82,7 @@ fun Modifier.neumorphic(
     isPressed: Boolean = false
 ) = this.composed {
     // Detectamos el tema activo comprobando si el color de fondo es el oscuro
-    val isDarkTheme = MaterialTheme.colorScheme.background == DarkBackgroundStart
+    val isDarkTheme = com.example.yra.ui.theme.LocalYraDarkTheme.current
     
     val lightShadow = if (isDarkTheme) DarkShadowLight else LightShadowLight
     val darkShadow = if (isDarkTheme) DarkShadowDark else LightShadowDark

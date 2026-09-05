@@ -40,6 +40,8 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.TextButton
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.example.yra.R
 
 @Composable
 fun SongsScreen(
@@ -104,14 +106,14 @@ fun SongsScreen(
                 ) {
                     Text("Error: ${state.message}", color = MaterialTheme.colorScheme.error)
                     Button(onClick = { viewModel.syncMediaStore() }, modifier = Modifier.padding(top = 8.dp)) {
-                        Text("Reintentar")
+                        Text(stringResource(R.string.action_retry))
                     }
                 }
             }
             is SongsUiState.Success -> {
                 if (state.songs.isEmpty()) {
                     Text(
-                        "No se encontraron canciones.",
+                        stringResource(R.string.no_songs_found),
                         modifier = Modifier.align(Alignment.Center),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -126,10 +128,7 @@ fun SongsScreen(
                                 onEditClick = { songToEdit = song },
                                 onAddToPlaylistClick = { songToAddToPlaylist = song },
                                 onToggleFavorite = { viewModel.toggleFavorite(song) },
-                                onDeleteClick = {
-                                    // TODO: Implement physical deletion dialog and flow here.
-                                    viewModel.deleteSongFromDb(song.id)
-                                },
+                                onDeleteClick = { songToDelete = song },
                                 onOptionsClick = { songOptions = song }
                             )
                         }
@@ -174,8 +173,8 @@ fun SongsScreen(
     songToDelete?.let { song ->
         AlertDialog(
             onDismissRequest = { songToDelete = null },
-            title = { Text("Eliminar Canción") },
-            text = { Text("¿Seguro que quieres eliminar esta canción de tu dispositivo? Esta acción no se puede deshacer y borrará el archivo físico.") },
+            title = { Text(stringResource(R.string.dialog_delete_song_title)) },
+            text = { Text(stringResource(R.string.dialog_delete_song_message)) },
             confirmButton = {
                 TextButton(onClick = {
                     try {
@@ -196,12 +195,12 @@ fun SongsScreen(
                         songToDelete = null
                     }
                 }) {
-                    Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.action_delete), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { songToDelete = null }) {
-                    Text("Cancelar")
+                    Text(stringResource(R.string.action_cancel))
                 }
             }
         )

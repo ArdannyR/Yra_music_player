@@ -31,14 +31,6 @@ fun StatsScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(vertical = 24.dp)
     ) {
-        item {
-            Text(
-                text = "Statistics",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
 
         item {
             NeuCard(modifier = Modifier.fillMaxWidth()) {

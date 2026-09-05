@@ -15,8 +15,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.yra.R
 import com.example.yra.data.local.PlaylistEntity
 
 @Composable
@@ -35,7 +37,7 @@ fun AddToPlaylistDialog(
                 modifier = Modifier.padding(24.dp)
             ) {
                 Text(
-                    text = "Añadir a Playlist",
+                    text = stringResource(R.string.song_options_add_to_playlist),
                     style = MaterialTheme.typography.titleLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -76,7 +78,7 @@ fun AddToPlaylistDialog(
                     horizontalArrangement = androidx.compose.foundation.layout.Arrangement.End
                 ) {
                     TextButton(onClick = onDismiss) {
-                        Text("Cancelar")
+                        Text(stringResource(R.string.action_cancel))
                     }
                 }
             }

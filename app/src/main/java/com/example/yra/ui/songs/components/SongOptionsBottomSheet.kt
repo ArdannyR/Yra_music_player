@@ -26,8 +26,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.example.yra.R
 import com.example.yra.data.local.SongEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,7 +81,7 @@ fun SongOptionsBottomSheet(
 
             BottomSheetItem(
                 icon = Icons.Default.PlaylistAdd,
-                text = "Añadir a Playlist",
+                text = stringResource(R.string.song_options_add_to_playlist),
                 onClick = {
                     onDismiss()
                     onAddToPlaylistClick()
@@ -87,7 +89,7 @@ fun SongOptionsBottomSheet(
             )
             BottomSheetItem(
                 icon = Icons.Default.Edit,
-                text = "Editar Metadatos",
+                text = stringResource(R.string.song_options_edit_metadata),
                 onClick = {
                     onDismiss()
                     onEditDataClick()
@@ -95,7 +97,7 @@ fun SongOptionsBottomSheet(
             )
             BottomSheetItem(
                 icon = Icons.Default.Info,
-                text = "Detalles Técnicos",
+                text = stringResource(R.string.song_options_technical_details),
                 onClick = {
                     onDismiss()
                     onDetailedDataClick()
@@ -103,7 +105,7 @@ fun SongOptionsBottomSheet(
             )
             BottomSheetItem(
                 icon = Icons.Default.Settings,
-                text = "Opciones",
+                text = stringResource(R.string.song_options_settings),
                 onClick = {
                     onDismiss()
                     onGoToOptionsClick()
@@ -111,7 +113,7 @@ fun SongOptionsBottomSheet(
             )
             BottomSheetItem(
                 icon = Icons.Default.Share,
-                text = "Compartir",
+                text = stringResource(R.string.song_options_share),
                 onClick = {
                     onDismiss()
                     onShareClick()
@@ -119,7 +121,7 @@ fun SongOptionsBottomSheet(
             )
             BottomSheetItem(
                 icon = Icons.Default.Folder,
-                text = "Ir a la carpeta",
+                text = stringResource(R.string.song_options_go_to_folder),
                 onClick = {
                     onDismiss()
                     onGoToFolderClick()
@@ -127,7 +129,7 @@ fun SongOptionsBottomSheet(
             )
             BottomSheetItem(
                 icon = Icons.Default.Delete,
-                text = "Eliminar del dispositivo",
+                text = stringResource(R.string.song_options_delete_from_device),
                 tint = MaterialTheme.colorScheme.error,
                 onClick = {
                     onDismiss()

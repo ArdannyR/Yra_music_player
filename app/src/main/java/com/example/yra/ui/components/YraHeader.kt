@@ -3,6 +3,7 @@ package com.example.yra.ui.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
@@ -23,6 +24,7 @@ fun YraHeader(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .statusBarsPadding()
             .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

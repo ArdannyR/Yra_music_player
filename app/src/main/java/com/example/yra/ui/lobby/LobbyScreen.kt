@@ -22,13 +22,7 @@ fun LobbyScreen(viewModel: LobbyViewModel) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Welcome to Yra",
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(bottom = 32.dp, top = 16.dp)
-        )
+
 
         NeuCard(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {

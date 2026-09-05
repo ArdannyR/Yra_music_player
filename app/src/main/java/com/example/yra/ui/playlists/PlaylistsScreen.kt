@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -24,7 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.yra.R
 import com.example.yra.ui.playlists.components.CreatePlaylistDialog
 import com.example.yra.ui.playlists.components.PlaylistCard
 
@@ -43,7 +46,7 @@ fun PlaylistsScreen(
             }
             is PlaylistsUiState.Error -> {
                 Text(
-                    text = "Error: ${state.message}",
+                    text = "${stringResource(R.string.error_prefix)} ${state.message}",
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.align(Alignment.Center)
                 )
@@ -59,11 +62,12 @@ fun PlaylistsScreen(
                     // Tarjeta estática para crear playlist
                     item {
                         PlaylistCard(
-                            title = "Nueva",
+                            title = stringResource(R.string.playlist_new),
                             icon = {
                                 Icon(
                                     imageVector = Icons.Default.Add,
-                                    contentDescription = "Crear",
+                                    contentDescription = stringResource(R.string.action_create),
+                                    modifier = Modifier.size(32.dp),
                                     tint = MaterialTheme.colorScheme.onSurface
                                 )
                             },

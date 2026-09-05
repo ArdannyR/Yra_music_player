@@ -29,6 +29,16 @@ import com.example.yra.ui.components.YraHeader
 import com.example.yra.ui.components.YraNavbar
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
@@ -105,7 +115,7 @@ fun YraNavGraph(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     
-    val isDarkTheme = MaterialTheme.colorScheme.background == DarkBackgroundStart
+    val isDarkTheme = com.example.yra.ui.theme.LocalYraDarkTheme.current
     val backgroundBrush = if (isDarkTheme) {
         Brush.verticalGradient(listOf(DarkBackgroundStart, DarkBackgroundEnd))
     } else {
@@ -145,6 +155,7 @@ fun YraNavGraph(
         Scaffold(
             modifier = Modifier.background(backgroundBrush),
             containerColor = androidx.compose.ui.graphics.Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onBackground,
             topBar = {
                 if (showTopBottomBars) {
                     YraHeader(
@@ -156,14 +167,20 @@ fun YraNavGraph(
         bottomBar = {
             if (showTopBottomBars) {
                 Column {
-                    currentSong?.let { song ->
-                        MiniSongPlay(
-                            song = song,
-                            isPlaying = isPlaying,
-                            onPlayPauseClick = { playbackController.togglePlayPause() },
-                            onToggleFavorite = { songsViewModel.toggleFavorite(song) },
-                            onClick = { navController.navigate(YraDestinations.SONG_PLAY_ROUTE) }
-                        )
+                    AnimatedVisibility(
+                        visible = currentSong != null,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
+                    ) {
+                        currentSong?.let { song ->
+                            MiniSongPlay(
+                                song = song,
+                                isPlaying = isPlaying,
+                                onPlayPauseClick = { playbackController.togglePlayPause() },
+                                onToggleFavorite = { songsViewModel.toggleFavorite(song) },
+                                onClick = { navController.navigate(YraDestinations.SONG_PLAY_ROUTE) }
+                            )
+                        }
                     }
                     YraNavbar(
                         currentRoute = currentRoute,
@@ -176,7 +193,11 @@ fun YraNavGraph(
         NavHost(
             navController = navController,
             startDestination = startDestination,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            enterTransition = { YraMotion.enterTransition },
+            exitTransition = { YraMotion.exitTransition },
+            popEnterTransition = { YraMotion.popEnterTransition },
+            popExitTransition = { YraMotion.popExitTransition }
         ) {
             composable(YraDestinations.LOBBY_ROUTE) {
                 val lobbyViewModel: LobbyViewModel = viewModel(factory = lobbyViewModelFactory)
@@ -231,7 +252,13 @@ fun YraNavGraph(
             composable(YraDestinations.ABOUT_US_ROUTE) {
                 PlaceholderScreen("About Us Screen")
             }
-            composable(YraDestinations.SONG_PLAY_ROUTE) {
+            composable(
+                route = YraDestinations.SONG_PLAY_ROUTE,
+                enterTransition = { YraMotion.modalEnterTransition },
+                exitTransition = { YraMotion.modalExitTransition },
+                popEnterTransition = { YraMotion.modalEnterTransition },
+                popExitTransition = { YraMotion.modalExitTransition }
+            ) {
                 SongPlayScreen(
                     playbackController = playbackController,
                     onToggleFavorite = { currentSong?.let { songsViewModel.toggleFavorite(it) } },
